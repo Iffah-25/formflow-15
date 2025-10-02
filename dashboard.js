@@ -1,4 +1,4 @@
-// dashboard.js - FULLY INTEGRATED & CORRECTED
+// dashboard.js - UPDATED for Render Deployment
 
 document.addEventListener('DOMContentLoaded', () => {
     
@@ -19,27 +19,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- 2. Security Check (Must run first) ---
     const token = verifyAuthToken();
-    if (!token) return; // If token is missing, execution stops here (redirect occurred in verifyAuthToken)
+    if (!token) return; // Redirect occurs in verifyAuthToken
 
     // --- 3. Initialize Functions ---
     setupTabSwitching(navItems, tabContents, titleElement, tabTitles);
     
-    // --- 4. Initial Data Loading (Pass the valid token directly) ---
+    // --- 4. Initial Data Loading ---
     loadProfileInfo();
     loadDashboardStats(token); 
     loadCreatedForms(token);
 });
 
 // =========================================
-// CORE TAB SWITCHING LOGIC
+// TAB SWITCHING LOGIC
 // =========================================
 
 function switchTab(tabName, navItems, tabContents, titleElement, tabTitles) {
-    // 1. Remove 'active' from all nav items and content
     navItems.forEach(item => item.classList.remove('active'));
     tabContents.forEach(content => content.classList.remove('active'));
 
-    // 2. Add 'active' to the selected item and content
     const activeNavItem = document.querySelector(`.nav-item[data-tab="${tabName}"]`);
     const activeContent = document.getElementById(`tab-${tabName}`);
 
@@ -49,7 +47,6 @@ function switchTab(tabName, navItems, tabContents, titleElement, tabTitles) {
         titleElement.textContent = tabTitles[tabName] || 'Dashboard';
     }
 
-    // SPECIAL HANDLING for Templates: Redirect to external HTML page
     if (tabName === 'templates') {
         window.location.href = 'template_library.html';
     }
@@ -57,13 +54,10 @@ function switchTab(tabName, navItems, tabContents, titleElement, tabTitles) {
 
 function setupTabSwitching(navItems, tabContents, titleElement, tabTitles) {
     
-    // --- Setup Sidebar Click Handlers ---
     navItems.forEach(item => {
         item.addEventListener('click', (e) => {
             e.preventDefault(); 
             const tab = item.getAttribute('data-tab');
-            
-            // Check if the link has a direct href (like Templates)
             if (item.href && item.href.includes('template_library.html')) {
                 window.location.href = 'template_library.html';
             } else {
@@ -71,25 +65,14 @@ function setupTabSwitching(navItems, tabContents, titleElement, tabTitles) {
             }
         });
     });
-    
-    // --- Setup Global OnClick Handlers for Header/Action Cards ---
-    // openCreateForm (Quick Create / Start from Scratch): Redirects to index.html and should open the modal
-    window.openCreateForm = () => {
-        window.location.href = 'index.html#formModal'; 
-    }; 
-    
-    // navigateToTemplates (Use a Template): Redirects to the library page
-    window.navigateToTemplates = () => {
-        window.location.href = 'template_library.html';
-    };
 
+    window.openCreateForm = () => switchTab('create', navItems, tabContents, titleElement, tabTitles);
+    window.navigateToTemplates = () => window.location.href = 'template_library.html';
     window.shareDashboard = () => alert('Share functionality not yet implemented!');
     window.startPdfToForm = () => switchTab('pdf-to-form', navItems, tabContents, titleElement, tabTitles);
 
-    // Initial load state
     switchTab('overview', navItems, tabContents, titleElement, tabTitles);
 }
-
 
 // =========================================
 // SECURITY & USER INFO
@@ -107,7 +90,6 @@ function verifyAuthToken() {
 
 function loadProfileInfo() {
     const username = localStorage.getItem('username') || 'Guest User';
-    
     const displayNameEl = document.getElementById('user-display-name');
     const profileUsernameEl = document.getElementById('profile-username');
     
@@ -123,14 +105,15 @@ document.getElementById('logout-btn').addEventListener('click', () => {
     window.location.href = 'SignUp_LogIn_Form.html'; 
 });
 
-
 // =========================================
 // DYNAMIC CONTENT LOADING (API Interaction)
 // =========================================
 
+const API_BASE_URL = 'https://your-backend.onrender.com/api/v1';
+
 async function loadDashboardStats(token) {
     try {
-        const response = await fetch('/api/v1/dashboard/stats', {
+        const response = await fetch(`${API_BASE_URL}/dashboard/stats`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         
@@ -142,33 +125,27 @@ async function loadDashboardStats(token) {
         document.querySelector('.stats-grid .stat-card:nth-child(1) .stat-number').textContent = stats.totalForms;
         document.querySelector('.stats-grid .stat-card:nth-child(2) .stat-number').textContent = stats.totalResponses;
         document.querySelector('.stats-grid .stat-card:nth-child(3) .stat-number').textContent = `$${stats.revenueGenerated.toFixed(2)}`;
-
     } catch (error) {
-        if (error.message === 'Auth Failed') {
-             // Handle server-side token rejection by forcing client logout
-             localStorage.removeItem('authToken');
-             localStorage.removeItem('username');
-             window.location.href = 'SignUp_LogIn_Form.html';
-        }
+        handleAuthError(error);
         console.error('Error loading stats:', error);
     }
 }
 
 async function loadCreatedForms(token) {
     try {
-        const response = await fetch('/api/v1/dashboard/forms', {
+        const response = await fetch(`${API_BASE_URL}/dashboard/forms`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
-        
+
         if (response.status === 401 || response.status === 403) throw new Error('Auth Failed');
         if (!response.ok) throw new Error('Failed to fetch forms');
 
         const forms = await response.json();
         const formListEl = document.querySelector('#tab-forms .form-list');
-        formListEl.innerHTML = ''; // Clear loading content
+        formListEl.innerHTML = '';
 
         if (forms.length === 0) {
-            formListEl.innerHTML = '<p style="text-align: center; padding: 30px;">You haven\'t created any forms yet. Start building!</p>';
+            formListEl.innerHTML = '<p style="text-align:center; padding:30px;">You haven\'t created any forms yet. Start building!</p>';
             return;
         }
 
@@ -182,7 +159,7 @@ async function loadCreatedForms(token) {
                 <div class="form-details">
                     <i class='bx bx-${form.icon}'></i>
                     <span class="form-name">${form.name}</span>
-                    <span class="form-status ${statusClass}">${form.status.charAt(0).toUpperCase() + form.status.slice(1)}</span>
+                    <span class="form-status ${statusClass}">${capitalize(form.status)}</span>
                 </div>
                 <div class="form-actions">
                     <button class="action-icon"><i class='bx bx-link'></i> Link</button>
@@ -196,13 +173,25 @@ async function loadCreatedForms(token) {
         });
 
     } catch (error) {
-        if (error.message === 'Auth Failed') {
-             // Handle server-side token rejection by forcing client logout
-             localStorage.removeItem('authToken');
-             localStorage.removeItem('username');
-             window.location.href = 'SignUp_LogIn_Form.html';
-        }
+        handleAuthError(error);
         console.error('Error loading forms:', error);
-        document.querySelector('#tab-forms .form-list').innerHTML = '<p style="color: red; text-align: center; padding: 30px;">Failed to load forms. Server error.</p>';
+        document.querySelector('#tab-forms .form-list').innerHTML = '<p style="color:red; text-align:center; padding:30px;">Failed to load forms. Server error.</p>';
+    }
+}
+
+// =========================================
+// HELPER FUNCTIONS
+// =========================================
+
+function capitalize(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+function handleAuthError(error) {
+    if (error.message === 'Auth Failed') {
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('username');
+        alert('Session expired or invalid token. Please log in again.');
+        window.location.href = 'SignUp_LogIn_Form.html';
     }
 }
