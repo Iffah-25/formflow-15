@@ -1,0 +1,177 @@
+/* template_library.css */
+
+/* Reuse variables from dashboard.css */
+:root {
+    --primary-color: #9333ea;
+    --primary-dark: #6b21a8;
+    --secondary-color: #f5f3ff; 
+    --text-dark: #1f2937;
+    --text-light: #6b7280;
+    --bg-main: #f9fafb;
+    --bg-white: #ffffff;
+    --border-color: #e5e7eb;
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+}
+
+body {
+    background-color: var(--bg-main);
+    font-family: 'Inter', sans-serif;
+}
+
+.template-library-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+/* Header */
+.template-header-section {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: var(--primary-color);
+    font-weight: 600;
+    margin-bottom: 15px;
+    transition: all 0.2s;
+}
+
+.back-btn:hover {
+    color: var(--primary-dark);
+    transform: translateX(-5px);
+}
+
+.template-header-section h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--primary-dark);
+    margin-bottom: 10px;
+}
+
+.template-header-section p {
+    font-size: 1.1rem;
+    color: var(--text-light);
+}
+
+/* Template Grid */
+.template-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.template-card {
+    background-color: var(--bg-white);
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: var(--shadow-md);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border: 1px solid var(--border-color);
+}
+
+.template-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.template-card .template-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: white;
+    margin-bottom: 15px;
+    box-shadow: var(--shadow-md);
+}
+
+.template-card .card-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 10px;
+}
+
+.template-card .card-description {
+    color: var(--text-light);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    flex-grow: 1;
+    margin-bottom: 20px;
+}
+
+/* Tags */
+.template-tags {
+    margin-bottom: 20px;
+    display: flex;
+    gap: 8px;
+}
+
+.template-tags span {
+    background-color: var(--secondary-color);
+    color: var(--primary-dark);
+    padding: 4px 10px;
+    border-radius: 5px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+/* Actions */
+.card-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.card-actions .btn {
+    padding: 12px 15px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    flex-grow: 1;
+}
+
+.preview-btn {
+    background-color: var(--bg-white);
+    color: var(--text-dark);
+    border: 2px solid var(--border-color);
+}
+
+.preview-btn:hover {
+    background-color: var(--border-color);
+}
+
+.use-btn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+}
+
+.use-btn:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-1px);
+}
+
+/* Premium Card Style */
+.template-card.premium {
+    border: 2px solid gold;
+    background: #fffdf2;
+}
+
+.premium-btn {
+    background: #fbb329 !important;
+}
+.premium-btn:hover {
+    background: #e69d00 !important;
+}

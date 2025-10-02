@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FormFlow | Dashboard</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        
+        <aside class="sidebar">
+            <div class="logo">
+                <i class='bx bx-shapes'></i> FormFlow
+            </div>
+            <nav class="nav-menu">
+                <a href="#" class="nav-item active" data-tab="overview">
+                    <i class='bx bxs-dashboard'></i> Dashboard Overview
+                </a>
+                <a href="#" class="nav-item" data-tab="create">
+                    <i class='bx bx-file-plus'></i> Create New Form
+                </a>
+                <a href="#" class="nav-item" data-tab="forms">
+                    <i class='bx bx-list-check'></i> Created Forms
+                </a>
+                <a href="#" class="nav-item" data-tab="responses">
+                    <i class='bx bx-bar-chart-alt-2'></i> Form Responses
+                </a>
+                <a href="template.html" class="nav-item" data-tab="templates">
+                    <i class='bx bx-grid-alt'></i> Templates
+                </a>
+                <a href="#" class="nav-item feature-advanced" data-tab="pdf-to-form">
+                    <i class='bx bxs-file-pdf'></i> PDF to Form <span class="badge">NEW</span>
+                </a>
+            </nav>
+
+            <div class="user-profile">
+                <a href="#" class="nav-item profile-link" data-tab="profile">
+                    <img src="https://i.pravatar.cc/300?img=1" alt="User Avatar" class="avatar">
+                    <div class="user-info">
+                        <span id="user-display-name">Guest User</span>
+                        <small>View Profile</small>
+                    </div>
+                </a>
+                <button id="logout-btn" class="logout-btn">
+                    <i class='bx bx-log-out'></i>
+                </button>
+            </div>
+        </aside>
+
+        <main class="content-area">
+            <header class="content-header">
+                <h1 id="current-tab-title">Dashboard Overview</h1>
+                <div class="header-actions">
+                    <button class="header-btn primary-btn" onclick="openCreateForm()">
+                        <i class='bx bx-plus'></i> Quick Create
+                    </button>
+                    <button class="header-btn secondary-btn" onclick="shareDashboard()">
+                        <i class='bx bx-share-alt'></i> Share Insights
+                    </button>
+                </div>
+            </header>
+
+            <section id="tab-overview" class="tab-content active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <i class='bx bxs-file-blank'></i>
+                        <h3>Total Forms</h3>
+                        <p class="stat-number">25</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class='bx bxs-inbox'></i>
+                        <h3>Total Responses</h3>
+                        <p class="stat-number">1,450</p>
+                    </div>
+                    <div class="stat-card revenue-card">
+                        <i class='bx bx-dollar-circle'></i>
+                        <h3>Revenue Generated</h3>
+                        <p class="stat-number">$5,200</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class='bx bx-user'></i>
+                        <h3>Active Users</h3>
+                        <p class="stat-number">120</p>
+                    </div>
+                </div>
+
+                <div class="recent-activity-card">
+                    <h2>Recent Form Activity</h2>
+                    <ul class="activity-list">
+                        <li><span class="activity-icon"><i class='bx bx-check-circle'></i></span> 
+                            **Contact Form** received 5 new responses. (2m ago)
+                        </li>
+                        <li><span class="activity-icon"><i class='bx bx-upload'></i></span> 
+                            **Q3 Survey** was successfully published. (1h ago)
+                        </li>
+                        <li><span class="activity-icon"><i class='bx bx-credit-card-front'></i></span> 
+                            New payment received via **Order Form**. ($49.99)
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="tab-create" class="tab-content">
+                <h2>Create New Form</h2>
+                <div class="feature-card-grid">
+                    <div class="action-card" onclick="startFormBuilder('scratch')">
+                        <i class='bx bx-edit-alt'></i>
+                        <h3>Start from Scratch</h3>
+                        <p>Build a form using the drag-and-drop editor.</p>
+                    </div>
+                    <div class="action-card" onclick="navigateToTemplates()">
+                        <i class='bx bx-grid-alt'></i>
+                        <h3>Use a Template</h3>
+                        <p>Select from over 50 professional templates.</p>
+                    </div>
+                    <div class="action-card advanced-feature-card" onclick="startPdfToForm()">
+                        <i class='bx bxs-file-pdf'></i>
+                        <h3>Convert PDF</h3>
+                        <p>Instantly turn any PDF into a digital form.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="tab-forms" class="tab-content">
+                <h2>Your Created Forms <button class="primary-btn publish-all"><i class='bx bx-globe'></i> Publish All</button></h2>
+                <div class="form-list">
+                    <div class="form-item">
+                        <div class="form-details">
+                            <i class='bx bx-user-plus'></i>
+                            <span class="form-name">Event Registration 2026</span>
+                            <span class="form-status published">Published</span>
+                        </div>
+                        <div class="form-actions">
+                            <button class="action-icon"><i class='bx bx-link'></i> Link</button>
+                            <button class="action-icon"><i class='bx bx-pencil'></i> Edit</button>
+                            <button class="action-icon view-responses-btn"><i class='bx bx-bar-chart-alt-2'></i> Responses (45)</button>
+                        </div>
+                    </div>
+                    <div class="form-item">
+                        <div class="form-details">
+                            <i class='bx bx-check-square'></i>
+                            <span class="form-name">Q4 Customer Survey</span>
+                            <span class="form-status draft">Draft</span>
+                        </div>
+                        <div class="form-actions">
+                            <button class="action-icon"><i class='bx bx-trash'></i> Delete</button>
+                            <button class="action-icon primary-btn"><i class='bx bx-upload'></i> Publish</button>
+                            <button class="action-icon view-responses-btn" disabled><i class='bx bx-bar-chart-alt-2'></i> Responses (0)</button>
+                        </div>
+                    </div>
+                    <div class="form-item">
+                        <div class="form-details">
+                            <i class='bx bxs-file-pdf'></i>
+                            <span class="form-name">HR Onboarding Form (PDF)</span>
+                            <span class="form-status published">Published</span>
+                        </div>
+                        <div class="form-actions">
+                            <button class="action-icon"><i class='bx bx-link'></i> Link</button>
+                            <button class="action-icon"><i class='bx bx-pencil'></i> Edit</button>
+                            <button class="action-icon view-responses-btn"><i class='bx bx-bar-chart-alt-2'></i> Responses (12)</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="tab-responses" class="tab-content">
+                <h2>Form Responses Overview</h2>
+                <p>Select a form from the "Created Forms" tab to view detailed responses and analytics.</p>
+                <div class="data-summary-grid">
+                    <div class="summary-card">
+                        <h3>Latest Responses</h3>
+                        <ul class="response-list">
+                            <li>**Event Reg:** John D. (Confirmed)</li>
+                            <li>**Q4 Survey:** Anonymous (5/5 Rating)</li>
+                            <li>**HR Onboard:** Sarah K. (Pending signature)</li>
+                        </ul>
+                    </div>
+                    <div class="summary-card chart-placeholder">
+                        <h3>Submission Trends (Last 7 Days)</h3>
+                        <p style="text-align:center; padding: 20px;">[Placeholder for Chart/Graph]</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="tab-templates" class="tab-content">
+                <h2>Explore Professional Templates</h2>
+                <div class="template-selector-grid">
+                    <div class="template-card-small">Contact Us</div>
+                    <div class="template-card-small">Job Application</div>
+                    <div class="template-card-small">Order Form</div>
+                    <div class="template-card-small">Feedback Survey</div>
+                    <div class="template-card-small">Quiz Builder</div>
+                    <div class="template-card-small">Event RSVP</div>
+                </div>
+                <button class="primary-btn" style="margin-top: 20px;">View All Templates</button>
+            </section>
+
+            <section id="tab-profile" class="tab-content">
+                <h2>User Profile & Settings</h2>
+                <div class="profile-details-card">
+                    <img src="https://i.pravatar.cc/300?img=1" alt="User Avatar" class="profile-avatar">
+                    <div class="details-group">
+                        <label>Username:</label>
+                        <p id="profile-username">guest_user_123</p>
+                    </div>
+                    <div class="details-group">
+                        <label>Email:</label>
+                        <p id="profile-email">guest@formflow.com</p>
+                    </div>
+                    <div class="details-group">
+                        <label>Plan:</label>
+                        <p id="profile-plan" class="plan-pro">Pro Plan</p>
+                    </div>
+                    <button class="secondary-btn">Edit Details</button>
+                </div>
+            </section>
+
+             <section id="tab-pdf-to-form" class="tab-content">
+                <h2>Convert PDF to Form Instantly</h2>
+                <div class="pdf-upload-area">
+                    <i class='bx bxs-cloud-upload'></i>
+                    <p>Drag and drop your PDF file here, or click to upload.</p>
+                    <input type="file" id="pdf-file-upload" accept="application/pdf">
+                    <button class="primary-btn" onclick="document.getElementById('pdf-file-upload').click()">Upload PDF</button>
+                </div>
+                <p class="feature-note">Our AI will automatically detect fields and build your digital form.</p>
+            </section>
+
+
+        </main>
+    </div>
+
+    <script>
+        // Simple client-side routing for the dashboard
+
+        const navItems = document.querySelectorAll('.nav-item');
+        const tabContents = document.querySelectorAll('.tab-content');
+        const titleElement = document.getElementById('current-tab-title');
+
+        const tabTitles = {
+            'overview': 'Dashboard Overview',
+            'create': 'Create New Form',
+            'forms': 'Your Created Forms',
+            'responses': 'Form Responses',
+            'templates': 'Template Library',
+            'profile': 'User Profile & Settings',
+            'pdf-to-form': 'PDF to Form Converter'
+        };
+
+        function switchTab(tabName) {
+            // 1. Remove 'active' from all nav items and content
+            navItems.forEach(item => item.classList.remove('active'));
+            tabContents.forEach(content => content.classList.remove('active'));
+
+            // 2. Add 'active' to the selected item and content
+            const activeNavItem = document.querySelector(`.nav-item[data-tab="${tabName}"]`);
+            const activeContent = document.getElementById(`tab-${tabName}`);
+
+            if (activeNavItem && activeContent) {
+                activeNavItem.classList.add('active');
+                activeContent.classList.add('active');
+                titleElement.textContent = tabTitles[tabName] || 'Dashboard';
+            }
+        }
+
+        // Attach event listeners to navigation items
+        navItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                const tab = item.getAttribute('data-tab');
+                switchTab(tab);
+            });
+        });
+
+        // Placeholder functions for demonstration
+        window.openCreateForm = () => switchTab('create');
+        window.navigateToTemplates = () => switchTab('templates');
+        window.startPdfToForm = () => switchTab('pdf-to-form');
+        
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            alert('Logged out! Redirecting to login page...');
+            localStorage.removeItem('authToken');
+            window.location.href = 'SignUp_LogIn_Form.html'; 
+        });
+
+        // Initial setup on page load
+        switchTab('overview');
+    </script>
+</body>
+</html>

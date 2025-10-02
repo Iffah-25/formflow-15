@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FormFlow | Template Library</title>
+    <link rel="stylesheet" href="style.css"> 
+    <link rel="stylesheet" href="template.css"> 
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body>
+    <div class="template-library-container">
+        
+        <header class="template-header-section">
+            <a href="dashboard.html" class="back-btn"><i class='bx bx-arrow-back'></i> Back to Dashboard</a>
+            <h1>Template Library</h1>
+            <p>Choose from professional, fully customizable templates to start collecting data instantly.</p>
+        </header>
+
+        <div class="template-grid">
+            
+            <div class="template-card wide">
+                <div class="template-icon" style="background: linear-gradient(45deg, #42a5f5, #2196f3);">
+                    <i class='bx bx-user-plus'></i>
+                </div>
+                <h2 class="card-title">Contact Form</h2>
+                <p class="card-description">The essential form for connecting with your audience, capturing inquiries, and building mailing lists.</p>
+                <div class="template-tags">
+                    <span>#Business</span>
+                    <span>#LeadGen</span>
+                    <span>#Free</span>
+                </div>
+                <div class="card-actions">
+                    <button class="btn preview-btn" onclick="alert('Previewing Contact Form...');">Preview</button>
+                    <button class="btn use-btn" onclick="startFormBuilder('contact')">Use Template</button>
+                </div>
+            </div>
+
+            <div class="template-card wide">
+                <div class="template-icon" style="background: linear-gradient(45deg, #ffa726, #fb8c00);">
+                    <i class='bx bx-briefcase'></i>
+                </div>
+                <h2 class="card-title">Job Application</h2>
+                <p class="card-description">Streamline your hiring process. Includes resume upload, work history, and custom questions.</p>
+                <div class="template-tags">
+                    <span>#HR</span>
+                    <span>#Hiring</span>
+                    <span>#Uploads</span>
+                </div>
+                <div class="card-actions">
+                    <button class="btn preview-btn" onclick="alert('Previewing Job Application...');">Preview</button>
+                    <button class="btn use-btn" onclick="startFormBuilder('job')">Use Template</button>
+                </div>
+            </div>
+            
+            <div class="template-card wide premium">
+                <div class="template-icon" style="background: linear-gradient(45deg, #ec407a, #d81b60);">
+                    <i class='bx bx-store'></i>
+                </div>
+                <h2 class="card-title">Product Order Form</h2>
+                <p class="card-description">E-commerce ready: collect product selection, quantity, shipping, and integrated payment details.</p>
+                <div class="template-tags">
+                    <span>#Ecommerce</span>
+                    <span>#Payment</span>
+                    <span>#Premium</span>
+                </div>
+                <div class="card-actions">
+                    <button class="btn preview-btn" onclick="alert('Previewing Order Form...');">Preview</button>
+                    <button class="btn use-btn premium-btn" onclick="startFormBuilder('order')">Use Template</button>
+                </div>
+            </div>
+
+            <div class="template-card wide">
+                <div class="template-icon" style="background: linear-gradient(45deg, #66bb6a, #43a047);">
+                    <i class='bx bx-check-square'></i>
+                </div>
+                <h2 class="card-title">Feedback Survey</h2>
+                <p class="card-description">Quickly gather customer sentiment, NPS scores, and collect testimonials.</p>
+                <div class="template-tags">
+                    <span>#Survey</span>
+                    <span>#Research</span>
+                </div>
+                <div class="card-actions">
+                    <button class="btn preview-btn" onclick="alert('Previewing Feedback Survey...');">Preview</button>
+                    <button class="btn use-btn" onclick="startFormBuilder('survey')">Use Template</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    
+    
+    <script src="script.js"></script>
+    <script>
+        // Placeholder function to link back to the existing Form Builder logic in script.js
+        function startFormBuilder(type) {
+            // This relies on the original openFormBuilder being available globally via script.js
+            window.openFormBuilder(type);
+        }
+    </script>
+</body>
+</html>
