@@ -9,12 +9,13 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken'); // Assuming you have installed this
 
 const app = express();
-const PORT = 3000;
-const JWT_SECRET = '25bb302b318e84b9db5fa509593e724b5b5aca88c36f028eb7ee290cb7b25ae'; // <-- REPLACE THIS MOCK KEY!
+const PORT = process.env.PORT || 3000;
+    
+const JWT_SECRET = process.env.JWT_SECRET; // <-- Set your JWT secret in an environment variable named JWT_SECRET!
 
 // --- Database Connection ---
 // REPLACE THIS URI with your valid MongoDB Atlas connection string!
-const MONGODB_URI = "mongodb+srv://iffahtech25_db_user:Iffah%4096618@cluster0.n22btrk.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"; 
+const MONGODB_URI = process.env.MONGO_URI; 
 
 // --- Mongoose Schemas ---
 const UserSchema = new mongoose.Schema({
