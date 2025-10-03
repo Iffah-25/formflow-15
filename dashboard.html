@@ -4,40 +4,641 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FormFlow | Dashboard</title>
-    <link rel="stylesheet" href="dashboard.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+        :root {
+            --primary-color: #fc84fc;
+            --primary-dark: #fc84fc;
+            --secondary-color: #f5f3ff;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --bg-white: #ffffff;
+            --bg-main: #f9fafb;
+            --border-color: #e5e7eb;
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--text-dark);
+            background-color: var(--bg-main);
+        }
+
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 260px;
+            background-color: var(--bg-white);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--border-color);
+            box-shadow: var(--shadow-md);
+            position: sticky;
+            top: 0;
+            height: 100vh;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .logo i {
+            font-size: 2rem;
+        }
+
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex-grow: 1;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 500;
+            border-radius: 10px;
+            transition: all 0.2s ease;
+            gap: 15px;
+            cursor: pointer;
+        }
+
+        .nav-item i {
+            font-size: 1.3rem;
+        }
+
+        .nav-item:hover {
+            background-color: var(--secondary-color);
+            color: var(--primary-dark);
+        }
+
+        .nav-item.active {
+            background-color: var(--primary-color);
+            color: var(--bg-white);
+            font-weight: 600;
+            box-shadow: var(--shadow-md);
+        }
+
+        .nav-item.active i {
+            color: var(--bg-white);
+        }
+
+        .feature-advanced .badge {
+            background-color: #fde047;
+            color: var(--text-dark);
+            font-size: 0.75rem;
+            padding: 2px 6px;
+            border-radius: 5px;
+            font-weight: 700;
+            margin-left: auto;
+        }
+
+        .user-profile {
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .profile-link {
+            flex-grow: 1;
+            padding: 5px 0;
+            border-radius: 0;
+        }
+
+        .profile-link:hover {
+            background-color: transparent;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 10px;
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-info span {
+            font-weight: 600;
+        }
+
+        .user-info small {
+            color: var(--text-light);
+            font-size: 0.75rem;
+        }
+
+        .logout-btn {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            color: var(--text-light);
+            font-size: 1.5rem;
+            padding: 5px;
+            border-radius: 5px;
+            transition: color 0.2s ease;
+        }
+
+        .logout-btn:hover {
+            color: var(--primary-color);
+            background-color: var(--secondary-color);
+        }
+
+        .content-area {
+            flex-grow: 1;
+            padding: 30px;
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        #current-tab-title {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--primary-dark);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .header-btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: transform 0.2s;
+        }
+
+        .header-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .header-btn.primary-btn {
+            background-color: var(--primary-color);
+            color: var(--bg-white);
+        }
+
+        .header-btn.secondary-btn {
+            background-color: var(--bg-white);
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+        }
+
+        .tab-content {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+            opacity: 1;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background-color: var(--bg-white);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-md);
+            transition: transform 0.3s;
+            border-left: 5px solid var(--primary-color);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .stat-card i {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .stat-card h3 {
+            font-size: 1rem;
+            color: var(--text-light);
+            margin-bottom: 5px;
+        }
+
+        .stat-number {
+            font-size: 2.2rem;
+            font-weight: 800;
+        }
+
+        .revenue-card {
+            border-left-color: #10b981;
+        }
+
+        .revenue-card i {
+            color: #10b981;
+        }
+
+        .recent-activity-card {
+            background-color: var(--bg-white);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .recent-activity-card h2 {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+        }
+
+        .activity-list {
+            list-style: none;
+        }
+
+        .activity-list li {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px dashed var(--border-color);
+            font-size: 0.95rem;
+        }
+
+        .activity-list li:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            margin-right: 15px;
+            font-size: 1.2rem;
+            color: var(--primary-color);
+        }
+
+        .feature-card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .action-card {
+            background: var(--bg-white);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: var(--shadow-md);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .action-card:hover {
+            border-color: var(--primary-color);
+            background-color: var(--secondary-color);
+            transform: translateY(-5px);
+        }
+
+        .action-card i {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .action-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+        }
+
+        .action-card p {
+            color: var(--text-light);
+        }
+
+        .advanced-feature-card i {
+            color: #f97316;
+        }
+
+        .advanced-feature-card:hover {
+            border-color: #f97316;
+        }
+
+        .form-list {
+            margin-top: 20px;
+            background: var(--bg-white);
+            border-radius: 12px;
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+        }
+
+        .form-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .form-item:last-child {
+            border-bottom: none;
+        }
+
+        .form-details {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .form-details i {
+            font-size: 1.5rem;
+            color: var(--text-light);
+        }
+
+        .form-name {
+            font-weight: 600;
+        }
+
+        .form-status {
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .form-status.published {
+            background-color: #d1fae5;
+            color: #059669;
+        }
+
+        .form-status.draft {
+            background-color: #fee2e2;
+            color: #ef4444;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-icon {
+            background: var(--secondary-color);
+            border: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            color: var(--text-dark);
+            font-weight: 500;
+            transition: background 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .action-icon:hover {
+            background: var(--border-color);
+        }
+
+        .action-icon.primary-btn {
+            background-color: var(--primary-color);
+            color: var(--bg-white);
+        }
+
+        .action-icon.primary-btn:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .view-responses-btn {
+            background: #e0f2fe;
+            color: #0369a1;
+        }
+
+        .view-responses-btn:hover {
+            background: #bae6fd;
+        }
+
+        .publish-all {
+            margin-left: 20px;
+        }
+
+        .pdf-upload-area {
+            background-color: var(--bg-white);
+            border: 3px dashed var(--border-color);
+            border-radius: 15px;
+            padding: 50px;
+            text-align: center;
+            margin-top: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .pdf-upload-area:hover {
+            border-color: var(--primary-color);
+            background-color: var(--secondary-color);
+        }
+
+        .pdf-upload-area i {
+            font-size: 4rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .pdf-upload-area p {
+            color: var(--text-light);
+            margin-bottom: 15px;
+        }
+
+        #pdf-file-upload {
+            display: none;
+        }
+
+        .feature-note {
+            text-align: center;
+            margin-top: 15px;
+            font-style: italic;
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .profile-details-card {
+            max-width: 400px;
+            background: var(--bg-white);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: var(--shadow-md);
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 20px;
+            border: 3px solid var(--primary-color);
+        }
+
+        .details-group {
+            text-align: left;
+            margin-bottom: 15px;
+        }
+
+        .details-group label {
+            display: block;
+            font-weight: 600;
+            color: var(--text-light);
+            font-size: 0.85rem;
+            margin-bottom: 5px;
+        }
+
+        .details-group p {
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .plan-pro {
+            color: var(--primary-color);
+            font-weight: 700 !important;
+        }
+
+        .success-message {
+            background-color: #d1fae5;
+            color: #059669;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            display: none;
+        }
+
+        .template-selector-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .template-card-small {
+            background: var(--bg-white);
+            padding: 30px 15px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-md);
+            text-align: center;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid var(--border-color);
+        }
+
+        .template-card-small:hover {
+            background: var(--primary-color);
+            color: var(--bg-white);
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard-container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                position: static;
+                margin-bottom: 20px;
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .logo {
+                margin-bottom: 0;
+            }
+
+            .nav-menu {
+                display: none;
+            }
+
+            .user-profile {
+                display: none;
+            }
+
+            .content-area {
+                padding: 20px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-
     <div class="dashboard-container">
-        
         <aside class="sidebar">
             <div class="logo">
                 <i class='bx bx-shapes'></i> FormFlow
             </div>
             <nav class="nav-menu">
-                <a href="#" class="nav-item active" data-tab="overview">
+                <a class="nav-item active" data-tab="overview">
                     <i class='bx bxs-dashboard'></i> Dashboard Overview
                 </a>
-                <a href="start.html" class="nav-item" data-tab="create">
+                <a class="nav-item" data-tab="create">
                     <i class='bx bx-file-plus'></i> Create New Form
                 </a>
-                <a href="start.html" class="nav-item" data-tab="forms">
+                <a class="nav-item" data-tab="forms">
                     <i class='bx bx-list-check'></i> Created Forms
                 </a>
-                <a href="#" class="nav-item" data-tab="responses">
+                <a class="nav-item" data-tab="responses">
                     <i class='bx bx-bar-chart-alt-2'></i> Form Responses
                 </a>
-                <a href="template.html" class="nav-item" data-tab="templates">
+                <a class="nav-item" data-tab="templates">
                     <i class='bx bx-grid-alt'></i> Templates
                 </a>
-                <a href="#" class="nav-item feature-advanced" data-tab="pdf-to-form">
+                <a class="nav-item feature-advanced" data-tab="pdf-to-form">
                     <i class='bx bxs-file-pdf'></i> PDF to Form <span class="badge">NEW</span>
                 </a>
             </nav>
 
             <div class="user-profile">
-                <a href="#" class="nav-item profile-link" data-tab="profile">
+                <a class="nav-item profile-link" data-tab="profile">
                     <img src="https://i.pravatar.cc/300?img=1" alt="User Avatar" class="avatar">
                     <div class="user-info">
                         <span id="user-display-name">Guest User</span>
@@ -54,10 +655,10 @@
             <header class="content-header">
                 <h1 id="current-tab-title">Dashboard Overview</h1>
                 <div class="header-actions">
-                    <button class="header-btn primary-btn" onclick="openCreateForm()">
+                    <button class="header-btn primary-btn" id="quick-create-btn">
                         <i class='bx bx-plus'></i> Quick Create
                     </button>
-                    <button class="header-btn secondary-btn" onclick="shareDashboard()">
+                    <button class="header-btn secondary-btn" id="share-btn">
                         <i class='bx bx-share-alt'></i> Share Insights
                     </button>
                 </div>
@@ -91,13 +692,13 @@
                     <h2>Recent Form Activity</h2>
                     <ul class="activity-list">
                         <li><span class="activity-icon"><i class='bx bx-check-circle'></i></span> 
-                            **Contact Form** received 5 new responses. (2m ago)
+                            Contact Form received 5 new responses. (2m ago)
                         </li>
                         <li><span class="activity-icon"><i class='bx bx-upload'></i></span> 
-                            **Q3 Survey** was successfully published. (1h ago)
+                            Q3 Survey was successfully published. (1h ago)
                         </li>
                         <li><span class="activity-icon"><i class='bx bx-credit-card-front'></i></span> 
-                            New payment received via **Order Form**. ($49.99)
+                            New payment received via Order Form. ($49.99)
                         </li>
                     </ul>
                 </div>
@@ -106,17 +707,17 @@
             <section id="tab-create" class="tab-content">
                 <h2>Create New Form</h2>
                 <div class="feature-card-grid">
-                    <div class="action-card" onclick="startFormBuilder('scratch')">
+                    <div class="action-card" id="start-scratch-btn">
                         <i class='bx bx-edit-alt'></i>
                         <h3>Start from Scratch</h3>
                         <p>Build a form using the drag-and-drop editor.</p>
                     </div>
-                    <div class="action-card" onclick="navigateToTemplates()">
+                    <div class="action-card" id="use-template-btn">
                         <i class='bx bx-grid-alt'></i>
                         <h3>Use a Template</h3>
                         <p>Select from over 50 professional templates.</p>
                     </div>
-                    <div class="action-card advanced-feature-card" onclick="startPdfToForm()">
+                    <div class="action-card advanced-feature-card" id="convert-pdf-btn">
                         <i class='bx bxs-file-pdf'></i>
                         <h3>Convert PDF</h3>
                         <p>Instantly turn any PDF into a digital form.</p>
@@ -169,20 +770,6 @@
             <section id="tab-responses" class="tab-content">
                 <h2>Form Responses Overview</h2>
                 <p>Select a form from the "Created Forms" tab to view detailed responses and analytics.</p>
-                <div class="data-summary-grid">
-                    <div class="summary-card">
-                        <h3>Latest Responses</h3>
-                        <ul class="response-list">
-                            <li>**Event Reg:** John D. (Confirmed)</li>
-                            <li>**Q4 Survey:** Anonymous (5/5 Rating)</li>
-                            <li>**HR Onboard:** Sarah K. (Pending signature)</li>
-                        </ul>
-                    </div>
-                    <div class="summary-card chart-placeholder">
-                        <h3>Submission Trends (Last 7 Days)</h3>
-                        <p style="text-align:center; padding: 20px;">[Placeholder for Chart/Graph]</p>
-                    </div>
-                </div>
             </section>
 
             <section id="tab-templates" class="tab-content">
@@ -218,24 +805,24 @@
                 </div>
             </section>
 
-             <section id="tab-pdf-to-form" class="tab-content">
+            <section id="tab-pdf-to-form" class="tab-content">
                 <h2>Convert PDF to Form Instantly</h2>
-                <div class="pdf-upload-area">
+                <div class="pdf-upload-area" id="pdf-drop-zone">
                     <i class='bx bxs-cloud-upload'></i>
                     <p>Drag and drop your PDF file here, or click to upload.</p>
                     <input type="file" id="pdf-file-upload" accept="application/pdf">
-                    <button class="primary-btn" onclick="document.getElementById('pdf-file-upload').click()">Upload PDF</button>
+                    <button class="primary-btn" id="upload-pdf-btn">Upload PDF</button>
                 </div>
                 <p class="feature-note">Our AI will automatically detect fields and build your digital form.</p>
+                <div class="success-message" id="upload-success">
+                    <i class='bx bx-check-circle'></i> PDF uploaded successfully! Processing form fields...
+                </div>
             </section>
-
-
         </main>
     </div>
 
     <script>
-        // Simple client-side routing for the dashboard
-
+        // Tab switching functionality
         const navItems = document.querySelectorAll('.nav-item');
         const tabContents = document.querySelectorAll('.tab-content');
         const titleElement = document.getElementById('current-tab-title');
@@ -251,11 +838,9 @@
         };
 
         function switchTab(tabName) {
-            // 1. Remove 'active' from all nav items and content
             navItems.forEach(item => item.classList.remove('active'));
             tabContents.forEach(content => content.classList.remove('active'));
 
-            // 2. Add 'active' to the selected item and content
             const activeNavItem = document.querySelector(`.nav-item[data-tab="${tabName}"]`);
             const activeContent = document.getElementById(`tab-${tabName}`);
 
@@ -266,7 +851,7 @@
             }
         }
 
-        // Attach event listeners to navigation items
+        // Navigation click handlers
         navItems.forEach(item => {
             item.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -275,18 +860,794 @@
             });
         });
 
-        // Placeholder functions for demonstration
-        window.openCreateForm = () => switchTab('create');
-        window.navigateToTemplates = () => switchTab('templates');
-        window.startPdfToForm = () => switchTab('pdf-to-form');
-        
-        document.getElementById('logout-btn').addEventListener('click', () => {
-            alert('Logged out! Redirecting to login page...');
-            localStorage.removeItem('authToken');
-            window.location.href = 'index.html'; 
+        // Quick Create button
+        document.getElementById('quick-create-btn').addEventListener('click', () => {
+            switchTab('create');
         });
 
-        // Initial setup on page load
+        // Share button
+        document.getElementById('share-btn').addEventListener('click', () => {
+            alert('Share functionality: Copy dashboard link to clipboard!\n\nLink: https://formflow.app/dashboard/share/abc123');
+        });
+
+        // Start from Scratch button - Opens integrated form builder
+        document.getElementById('start-scratch-btn').addEventListener('click', () => {
+            openFormBuilder();
+        });
+
+        function openFormBuilder() {
+            // Hide dashboard and show form builder
+            document.querySelector('.dashboard-container').style.display = 'none';
+            
+            // Create form builder container
+            const builderContainer = document.createElement('div');
+            builderContainer.id = 'formBuilderContainer';
+            builderContainer.innerHTML = `
+                <style>
+                    #formBuilderContainer {
+                        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                        min-height: 100vh;
+                        padding: 20px;
+                    }
+                    .builder-wrapper {
+                        max-width: 800px;
+                        margin: 0 auto;
+                    }
+                    .builder-header-card {
+                        background: white;
+                        padding: 20px 30px;
+                        border-radius: 12px;
+                        margin-bottom: 20px;
+                        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                    }
+                    .builder-actions {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        margin-bottom: 15px;
+                    }
+                    .builder-back-btn {
+                        background: #f3f4f6;
+                        border: none;
+                        padding: 10px 20px;
+                        border-radius: 8px;
+                        cursor: pointer;
+                        font-weight: 600;
+                        display: flex;
+                        align-items: center;
+                        gap: 5px;
+                    }
+                    .builder-action-btns {
+                        display: flex;
+                        gap: 10px;
+                    }
+                    .builder-btn {
+                        padding: 10px 20px;
+                        border: none;
+                        border-radius: 8px;
+                        cursor: pointer;
+                        font-weight: 600;
+                        display: flex;
+                        align-items: center;
+                        gap: 5px;
+                    }
+                    .builder-btn-preview {
+                        background: #f3f4f6;
+                        color: #374151;
+                    }
+                    .builder-btn-save {
+                        background: #10b981;
+                        color: white;
+                    }
+                    .builder-form-title {
+                        border-top: 6px solid #fc84fc;
+                        padding-top: 20px;
+                    }
+                    .builder-title-input {
+                        font-size: 2rem;
+                        font-weight: 600;
+                        border: none;
+                        border-bottom: 2px solid transparent;
+                        width: 100%;
+                        padding: 10px 0;
+                        margin-bottom: 10px;
+                        outline: none;
+                        font-family: 'Inter', sans-serif;
+                    }
+                    .builder-title-input:focus {
+                        border-bottom-color: #fc84fc;
+                    }
+                    .builder-desc-input {
+                        font-size: 1rem;
+                        border: none;
+                        border-bottom: 2px solid transparent;
+                        width: 100%;
+                        padding: 8px 0;
+                        outline: none;
+                        color: #6b7280;
+                        font-family: 'Inter', sans-serif;
+                    }
+                    .builder-desc-input:focus {
+                        border-bottom-color: #fc84fc;
+                    }
+                    .builder-question-card {
+                        background: white;
+                        padding: 25px;
+                        border-radius: 12px;
+                        margin-bottom: 15px;
+                        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                        border-left: 6px solid #fc84fc;
+                    }
+                    .builder-question-header {
+                        display: flex;
+                        gap: 15px;
+                        margin-bottom: 20px;
+                    }
+                    .builder-question-input {
+                        flex: 1;
+                        font-size: 1.1rem;
+                        border: none;
+                        border-bottom: 2px solid #e5e7eb;
+                        padding: 10px 0;
+                        outline: none;
+                        font-family: 'Inter', sans-serif;
+                    }
+                    .builder-question-input:focus {
+                        border-bottom-color: #fc84fc;
+                    }
+                    .builder-type-select {
+                        padding: 10px 15px;
+                        border: 2px solid #e5e7eb;
+                        border-radius: 8px;
+                        font-weight: 500;
+                        cursor: pointer;
+                        outline: none;
+                        background: white;
+                        font-family: 'Inter', sans-serif;
+                    }
+                    .builder-options-container {
+                        margin: 15px 0;
+                    }
+                    .builder-option-item {
+                        display: flex;
+                        align-items: center;
+                        gap: 10px;
+                        margin-bottom: 10px;
+                    }
+                    .builder-option-icon {
+                        width: 20px;
+                        height: 20px;
+                        border: 2px solid #9ca3af;
+                        border-radius: 50%;
+                    }
+                    .builder-option-checkbox {
+                        border-radius: 4px;
+                    }
+                    .builder-option-input {
+                        flex: 1;
+                        border: none;
+                        border-bottom: 1px solid #e5e7eb;
+                        padding: 8px 0;
+                        outline: none;
+                        font-family: 'Inter', sans-serif;
+                    }
+                    .builder-option-input:focus {
+                        border-bottom-color: #fc84fc;
+                    }
+                    .builder-remove-option {
+                        background: none;
+                        border: none;
+                        color: #9ca3af;
+                        cursor: pointer;
+                        font-size: 1.2rem;
+                    }
+                    .builder-remove-option:hover {
+                        color: #ef4444;
+                    }
+                    .builder-add-option {
+                        background: none;
+                        border: none;
+                        color: #6b7280;
+                        cursor: pointer;
+                        padding: 8px 0;
+                        display: flex;
+                        align-items: center;
+                        gap: 5px;
+                        font-weight: 500;
+                    }
+                    .builder-add-option:hover {
+                        color: #fc84fc;
+                    }
+                    .builder-question-footer {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        padding-top: 15px;
+                        border-top: 1px solid #e5e7eb;
+                        margin-top: 15px;
+                    }
+                    .builder-question-actions {
+                        display: flex;
+                        gap: 10px;
+                    }
+                    .builder-icon-btn {
+                        background: none;
+                        border: none;
+                        cursor: pointer;
+                        font-size: 1.5rem;
+                        color: #6b7280;
+                        padding: 5px;
+                        border-radius: 4px;
+                    }
+                    .builder-icon-btn:hover {
+                        background: #f3f4f6;
+                        color: #374151;
+                    }
+                    .builder-required-toggle {
+                        display: flex;
+                        align-items: center;
+                        gap: 8px;
+                        font-size: 0.9rem;
+                        color: #6b7280;
+                        cursor: pointer;
+                    }
+                    .builder-toggle-switch {
+                        position: relative;
+                        width: 44px;
+                        height: 24px;
+                        background: #e5e7eb;
+                        border-radius: 12px;
+                        transition: background 0.3s;
+                    }
+                    .builder-toggle-switch.active {
+                        background: #fc84fc;
+                    }
+                    .builder-toggle-slider {
+                        position: absolute;
+                        top: 2px;
+                        left: 2px;
+                        width: 20px;
+                        height: 20px;
+                        background: white;
+                        border-radius: 50%;
+                        transition: transform 0.3s;
+                    }
+                    .builder-toggle-switch.active .builder-toggle-slider {
+                        transform: translateX(20px);
+                    }
+                    .builder-add-question {
+                        background: white;
+                        border: 2px dashed #cbd5e1;
+                        padding: 20px;
+                        border-radius: 12px;
+                        width: 100%;
+                        cursor: pointer;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        gap: 10px;
+                        font-weight: 600;
+                        color: #6b7280;
+                    }
+                    .builder-add-question:hover {
+                        border-color: #fc84fc;
+                        color: #fc84fc;
+                        background: #fdf4ff;
+                    }
+                    .builder-preview-modal {
+                        display: none;
+                        position: fixed;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        background: rgba(0,0,0,0.5);
+                        z-index: 2000;
+                        padding: 20px;
+                        overflow-y: auto;
+                    }
+                    .builder-preview-content {
+                        max-width: 700px;
+                        margin: 0 auto;
+                        background: white;
+                        border-radius: 12px;
+                        padding: 40px;
+                    }
+                    .builder-preview-header {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        margin-bottom: 30px;
+                    }
+                    .builder-close-preview {
+                        background: #f3f4f6;
+                        border: none;
+                        width: 40px;
+                        height: 40px;
+                        border-radius: 50%;
+                        cursor: pointer;
+                        font-size: 1.5rem;
+                        color: #6b7280;
+                    }
+                    .builder-preview-title {
+                        font-size: 2rem;
+                        font-weight: 700;
+                        margin-bottom: 10px;
+                        color: #1f2937;
+                    }
+                    .builder-preview-desc {
+                        color: #6b7280;
+                        margin-bottom: 30px;
+                    }
+                    .builder-preview-question {
+                        margin-bottom: 30px;
+                        padding-bottom: 20px;
+                        border-bottom: 1px solid #e5e7eb;
+                    }
+                    .builder-preview-q-text {
+                        font-weight: 600;
+                        margin-bottom: 15px;
+                        color: #1f2937;
+                    }
+                    .builder-required-mark {
+                        color: #ef4444;
+                        margin-left: 4px;
+                    }
+                    .builder-preview-input {
+                        width: 100%;
+                        padding: 12px;
+                        border: 2px solid #e5e7eb;
+                        border-radius: 8px;
+                        font-size: 1rem;
+                        outline: none;
+                        font-family: 'Inter', sans-serif;
+                    }
+                    .builder-preview-input:focus {
+                        border-color: #fc84fc;
+                    }
+                    .builder-preview-option {
+                        display: flex;
+                        align-items: center;
+                        gap: 10px;
+                        padding: 10px 0;
+                    }
+                    .builder-submit-btn {
+                        background: #fc84fc;
+                        color: white;
+                        border: none;
+                        padding: 15px 40px;
+                        border-radius: 8px;
+                        font-size: 1rem;
+                        font-weight: 600;
+                        cursor: pointer;
+                        width: 100%;
+                        margin-top: 20px;
+                    }
+                </style>
+                
+                <div class="builder-wrapper">
+                    <div class="builder-header-card">
+                        <div class="builder-actions">
+                            <button class="builder-back-btn" onclick="closeFormBuilder()">
+                                <i class='bx bx-arrow-back'></i> Back to Dashboard
+                            </button>
+                            <div class="builder-action-btns">
+                                <button class="builder-btn builder-btn-preview" onclick="previewBuilderForm()">
+                                    <i class='bx bx-show'></i> Preview
+                                </button>
+                                <button class="builder-btn builder-btn-save" onclick="saveBuilderForm()">
+                                    <i class='bx bx-save'></i> Save Form
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="builder-form-title">
+                            <input type="text" class="builder-title-input" id="builderFormTitle" placeholder="Untitled Form" value="Untitled Form">
+                            <input type="text" class="builder-desc-input" id="builderFormDesc" placeholder="Form description (optional)">
+                        </div>
+                    </div>
+
+                    <div id="builderQuestionsContainer"></div>
+
+                    <button class="builder-add-question" onclick="addBuilderQuestion()">
+                        <i class='bx bx-plus-circle' style="font-size: 1.5rem;"></i>
+                        Add Question
+                    </button>
+                </div>
+
+                <div class="builder-preview-modal" id="builderPreviewModal">
+                    <div class="builder-preview-content">
+                        <div class="builder-preview-header">
+                            <h2>Form Preview</h2>
+                            <button class="builder-close-preview" onclick="closeBuilderPreview()">
+                                <i class='bx bx-x'></i>
+                            </button>
+                        </div>
+                        <div id="builderPreviewContent"></div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(builderContainer);
+            
+            // Initialize form builder
+            window.builderQuestions = [];
+            window.builderQuestionId = 1;
+            addBuilderQuestion();
+        }
+
+        window.closeFormBuilder = function() {
+            const confirm = window.confirm('Are you sure you want to go back? Any unsaved changes will be lost.');
+            if (confirm) {
+                document.getElementById('formBuilderContainer').remove();
+                document.querySelector('.dashboard-container').style.display = 'flex';
+            }
+        };
+
+        window.addBuilderQuestion = function() {
+            const question = {
+                id: window.builderQuestionId++,
+                text: '',
+                type: 'short-answer',
+                options: ['Option 1'],
+                required: false
+            };
+            window.builderQuestions.push(question);
+            renderBuilderQuestions();
+        };
+
+        window.renderBuilderQuestions = function() {
+            const container = document.getElementById('builderQuestionsContainer');
+            if (!container) return;
+            
+            container.innerHTML = '';
+            window.builderQuestions.forEach((question, index) => {
+                const card = createBuilderQuestionCard(question, index);
+                container.appendChild(card);
+            });
+        };
+
+        function createBuilderQuestionCard(question, index) {
+            const card = document.createElement('div');
+            card.className = 'builder-question-card';
+            card.innerHTML = `
+                <div class="builder-question-header">
+                    <input type="text" class="builder-question-input" placeholder="Question ${index + 1}" 
+                           value="${question.text}" onchange="updateBuilderQuestion(${index}, 'text', this.value)">
+                    <select class="builder-type-select" onchange="updateBuilderQuestionType(${index}, this.value)">
+                        <option value="short-answer" ${question.type === 'short-answer' ? 'selected' : ''}>Short Answer</option>
+                        <option value="paragraph" ${question.type === 'paragraph' ? 'selected' : ''}>Paragraph</option>
+                        <option value="multiple-choice" ${question.type === 'multiple-choice' ? 'selected' : ''}>Multiple Choice</option>
+                        <option value="checkboxes" ${question.type === 'checkboxes' ? 'selected' : ''}>Checkboxes</option>
+                        <option value="dropdown" ${question.type === 'dropdown' ? 'selected' : ''}>Dropdown</option>
+                    </select>
+                </div>
+                
+                <div class="builder-options-container">
+                    ${renderBuilderOptions(question, index)}
+                </div>
+
+                <div class="builder-question-footer">
+                    <div class="builder-question-actions">
+                        <button class="builder-icon-btn" onclick="duplicateBuilderQuestion(${index})" title="Duplicate">
+                            <i class='bx bx-copy'></i>
+                        </button>
+                        <button class="builder-icon-btn" onclick="deleteBuilderQuestion(${index})" title="Delete">
+                            <i class='bx bx-trash'></i>
+                        </button>
+                    </div>
+                    <div class="builder-required-toggle" onclick="toggleBuilderRequired(${index})">
+                        <span>Required</span>
+                        <div class="builder-toggle-switch ${question.required ? 'active' : ''}" id="builderToggle-${index}">
+                            <div class="builder-toggle-slider"></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            return card;
+        }
+
+        function renderBuilderOptions(question, questionIndex) {
+            if (['short-answer', 'paragraph'].includes(question.type)) {
+                return `<input type="text" class="builder-option-input" placeholder="${question.type === 'paragraph' ? 'Long answer text' : 'Short answer text'}" disabled style="color: #9ca3af;">`;
+            }
+
+            if (['multiple-choice', 'checkboxes', 'dropdown'].includes(question.type)) {
+                const iconClass = question.type === 'multiple-choice' ? 'builder-option-icon' : 'builder-option-icon builder-option-checkbox';
+                return question.options.map((option, optionIndex) => `
+                    <div class="builder-option-item">
+                        <div class="${iconClass}"></div>
+                        <input type="text" class="builder-option-input" placeholder="Option ${optionIndex + 1}" 
+                               value="${option}" onchange="updateBuilderOption(${questionIndex}, ${optionIndex}, this.value)">
+                        ${question.options.length > 1 ? `
+                            <button class="builder-remove-option" onclick="removeBuilderOption(${questionIndex}, ${optionIndex})">
+                                <i class='bx bx-x'></i>
+                            </button>
+                        ` : ''}
+                    </div>
+                `).join('') + `
+                    <button class="builder-add-option" onclick="addBuilderOption(${questionIndex})">
+                        <i class='bx bx-plus'></i> Add option
+                    </button>
+                `;
+            }
+
+            return '';
+        }
+
+        window.updateBuilderQuestion = function(index, field, value) {
+            window.builderQuestions[index][field] = value;
+        };
+
+        window.updateBuilderQuestionType = function(index, type) {
+            window.builderQuestions[index].type = type;
+            if (['multiple-choice', 'checkboxes', 'dropdown'].includes(type) && window.builderQuestions[index].options.length === 0) {
+                window.builderQuestions[index].options = ['Option 1'];
+            }
+            renderBuilderQuestions();
+        };
+
+        window.updateBuilderOption = function(questionIndex, optionIndex, value) {
+            window.builderQuestions[questionIndex].options[optionIndex] = value;
+        };
+
+        window.addBuilderOption = function(questionIndex) {
+            window.builderQuestions[questionIndex].options.push(`Option ${window.builderQuestions[questionIndex].options.length + 1}`);
+            renderBuilderQuestions();
+        };
+
+        window.removeBuilderOption = function(questionIndex, optionIndex) {
+            if (window.builderQuestions[questionIndex].options.length > 1) {
+                window.builderQuestions[questionIndex].options.splice(optionIndex, 1);
+                renderBuilderQuestions();
+            }
+        };
+
+        window.toggleBuilderRequired = function(index) {
+            window.builderQuestions[index].required = !window.builderQuestions[index].required;
+            const toggle = document.getElementById(`builderToggle-${index}`);
+            if (toggle) toggle.classList.toggle('active');
+        };
+
+        window.duplicateBuilderQuestion = function(index) {
+            const newQuestion = JSON.parse(JSON.stringify(window.builderQuestions[index]));
+            newQuestion.id = window.builderQuestionId++;
+            window.builderQuestions.splice(index + 1, 0, newQuestion);
+            renderBuilderQuestions();
+        };
+
+        window.deleteBuilderQuestion = function(index) {
+            if (window.builderQuestions.length === 1) {
+                alert('You must have at least one question in your form.');
+                return;
+            }
+            if (confirm('Are you sure you want to delete this question?')) {
+                window.builderQuestions.splice(index, 1);
+                renderBuilderQuestions();
+            }
+        };
+
+        window.previewBuilderForm = function() {
+            const formTitle = document.getElementById('builderFormTitle').value || 'Untitled Form';
+            const formDescription = document.getElementById('builderFormDesc').value;
+            
+            let previewHTML = `
+                <div class="builder-preview-title">${formTitle}</div>
+                ${formDescription ? `<div class="builder-preview-desc">${formDescription}</div>` : ''}
+            `;
+
+            window.builderQuestions.forEach((question, index) => {
+                previewHTML += `
+                    <div class="builder-preview-question">
+                        <div class="builder-preview-q-text">
+                            ${index + 1}. ${question.text || `Question ${index + 1}`}
+                            ${question.required ? '<span class="builder-required-mark">*</span>' : ''}
+                        </div>
+                        ${renderBuilderPreviewInput(question)}
+                    </div>
+                `;
+            });
+
+            previewHTML += '<button class="builder-submit-btn" onclick="submitBuilderPreview()">Submit</button>';
+
+            document.getElementById('builderPreviewContent').innerHTML = previewHTML;
+            document.getElementById('builderPreviewModal').style.display = 'block';
+        };
+
+        function renderBuilderPreviewInput(question) {
+            if (question.type === 'short-answer') {
+                return '<input type="text" class="builder-preview-input" placeholder="Your answer">';
+            }
+            if (question.type === 'paragraph') {
+                return '<textarea class="builder-preview-input" rows="4" placeholder="Your answer"></textarea>';
+            }
+            if (question.type === 'multiple-choice') {
+                return question.options.map(option => `
+                    <div class="builder-preview-option">
+                        <input type="radio" name="q${question.id}">
+                        <label>${option}</label>
+                    </div>
+                `).join('');
+            }
+            if (question.type === 'checkboxes') {
+                return question.options.map((option, i) => `
+                    <div class="builder-preview-option">
+                        <input type="checkbox" id="q${question.id}-${i}">
+                        <label for="q${question.id}-${i}">${option}</label>
+                    </div>
+                `).join('');
+            }
+            if (question.type === 'dropdown') {
+                return `
+                    <select class="builder-preview-input">
+                        <option value="">Choose</option>
+                        ${question.options.map(option => `<option value="${option}">${option}</option>`).join('')}
+                    </select>
+                `;
+            }
+            return '';
+        }
+
+        window.closeBuilderPreview = function() {
+            document.getElementById('builderPreviewModal').style.display = 'none';
+        };
+
+        window.submitBuilderPreview = function() {
+            alert('This is a preview! Your form will collect real responses once published.');
+            closeBuilderPreview();
+        };
+
+        window.saveBuilderForm = function() {
+            const formTitle = document.getElementById('builderFormTitle').value || 'Untitled Form';
+            const formDescription = document.getElementById('builderFormDesc').value;
+            
+            const formData = {
+                title: formTitle,
+                description: formDescription,
+                questions: window.builderQuestions,
+                createdAt: new Date().toISOString(),
+                status: 'draft'
+            };
+
+            // Save to memory (not localStorage to follow artifact restrictions)
+            if (!window.savedForms) window.savedForms = [];
+            window.savedForms.push(formData);
+
+            alert(`✅ Form "${formTitle}" saved successfully!\n\n📝 Total Questions: ${window.builderQuestions.length}\n\nYou can now publish this form from your dashboard.`);
+            
+            // Go back to dashboard
+            setTimeout(() => {
+                closeFormBuilder();
+            }, 500);
+        };
+
+        // Use Template button
+        document.getElementById('use-template-btn').addEventListener('click', () => {
+            switchTab('templates');
+        });
+
+        // Convert PDF button
+        document.getElementById('convert-pdf-btn').addEventListener('click', () => {
+            switchTab('pdf-to-form');
+        });
+
+        // PDF Upload functionality
+        const pdfFileInput = document.getElementById('pdf-file-upload');
+        const uploadBtn = document.getElementById('upload-pdf-btn');
+        const dropZone = document.getElementById('pdf-drop-zone');
+        const successMessage = document.getElementById('upload-success');
+
+        uploadBtn.addEventListener('click', () => {
+            pdfFileInput.click();
+        });
+
+        pdfFileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file && file.type === 'application/pdf') {
+                handlePDFUpload(file);
+            } else if (file) {
+                alert('Please upload a valid PDF file.');
+            }
+        });
+
+        // Drag and drop functionality
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.style.borderColor = 'var(--primary-color)';
+            dropZone.style.backgroundColor = 'var(--secondary-color)';
+        });
+
+        dropZone.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            dropZone.style.borderColor = 'var(--border-color)';
+            dropZone.style.backgroundColor = 'var(--bg-white)';
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.style.borderColor = 'var(--border-color)';
+            dropZone.style.backgroundColor = 'var(--bg-white)';
+            
+            const file = e.dataTransfer.files[0];
+            if (file && file.type === 'application/pdf') {
+                handlePDFUpload(file);
+            } else {
+                alert('Please drop a valid PDF file.');
+            }
+        });
+
+        function handlePDFUpload(file) {
+            // Show success message
+            successMessage.style.display = 'block';
+            
+            // Simulate processing
+            setTimeout(() => {
+                alert(`PDF "${file.name}" uploaded successfully!\n\nProcessing complete. Your form has been created with ${Math.floor(Math.random() * 15) + 5} detected fields.\n\nClick OK to view your new form.`);
+                successMessage.style.display = 'none';
+                switchTab('forms');
+            }, 2000);
+        }
+
+        // Logout functionality
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            const confirmed = confirm('Are you sure you want to log out?');
+            if (confirmed) {
+                alert('Logged out successfully! Redirecting to login page...');
+                // Uncomment below if you have a login page
+                // window.location.href = 'SignUp_LogIn_Form.html';
+            }
+        });
+
+        // Template cards click handlers
+        document.querySelectorAll('.template-card-small').forEach(card => {
+            card.addEventListener('click', () => {
+                alert(`Loading "${card.textContent}" template...\n\nThis would open the form builder with the selected template.`);
+            });
+        });
+
+        // Publish All button
+        document.querySelector('.publish-all').addEventListener('click', () => {
+            const confirmed = confirm('Are you sure you want to publish all draft forms?');
+            if (confirmed) {
+                alert('All draft forms have been published successfully!');
+            }
+        });
+
+        // Form action buttons
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('.action-icon')) {
+                const btn = e.target.closest('.action-icon');
+                const btnText = btn.textContent.trim();
+                
+                if (btnText.includes('Link')) {
+                    alert('Form link copied to clipboard!\n\nhttps://formflow.app/f/abc123xyz');
+                } else if (btnText.includes('Edit')) {
+                    alert('Opening form editor...');
+                } else if (btnText.includes('Responses')) {
+                    switchTab('responses');
+                } else if (btnText.includes('Delete')) {
+                    const confirmed = confirm('Are you sure you want to delete this form?');
+                    if (confirmed) {
+                        alert('Form deleted successfully!');
+                    }
+                } else if (btnText.includes('Publish')) {
+                    alert('Form published successfully!');
+                }
+            }
+        });
+
+        // Load user info from storage if available
+        function loadUserInfo() {
+            const username = localStorage.getItem('username') || 'Guest User';
+            const email = localStorage.getItem('email') || 'guest@formflow.com';
+            
+            document.getElementById('user-display-name').textContent = username;
+            document.getElementById('profile-username').textContent = username.toLowerCase().replace(/\s/g, '_');
+            document.getElementById('profile-email').textContent = email;
+        }
+
+        // Initialize
+        loadUserInfo();
         switchTab('overview');
     </script>
 </body>
