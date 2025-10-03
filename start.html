@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FormFlow - Form Builder</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .builder-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .builder-header {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .header-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .back-btn {
+            background: #f3f4f6;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.2s;
+        }
+
+        .back-btn:hover {
+            background: #e5e7eb;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.2s;
+        }
+
+        .btn-preview {
+            background: #f3f4f6;
+            color: #374151;
+        }
+
+        .btn-preview:hover {
+            background: #e5e7eb;
+        }
+
+        .btn-save {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-save:hover {
+            background: #059669;
+        }
+
+        .form-title-section {
+            border-top: 6px solid #fc84fc;
+            padding-top: 20px;
+        }
+
+        .form-title-input {
+            font-size: 2rem;
+            font-weight: 600;
+            border: none;
+            border-bottom: 2px solid transparent;
+            width: 100%;
+            padding: 10px 0;
+            margin-bottom: 10px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-title-input:focus {
+            border-bottom-color: #fc84fc;
+        }
+
+        .form-description-input {
+            font-size: 1rem;
+            border: none;
+            border-bottom: 2px solid transparent;
+            width: 100%;
+            padding: 8px 0;
+            outline: none;
+            color: #6b7280;
+            transition: border-color 0.2s;
+        }
+
+        .form-description-input:focus {
+            border-bottom-color: #fc84fc;
+        }
+
+        .question-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-left: 6px solid #fc84fc;
+            position: relative;
+        }
+
+        .question-header {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .question-input {
+            flex: 1;
+            font-size: 1.1rem;
+            border: none;
+            border-bottom: 2px solid #e5e7eb;
+            padding: 10px 0;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .question-input:focus {
+            border-bottom-color: #fc84fc;
+        }
+
+        .question-type-select {
+            padding: 10px 15px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            outline: none;
+            background: white;
+        }
+
+        .question-type-select:focus {
+            border-color: #fc84fc;
+        }
+
+        .options-container {
+            margin: 15px 0;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .option-radio {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #9ca3af;
+            border-radius: 50%;
+        }
+
+        .option-checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #9ca3af;
+            border-radius: 4px;
+        }
+
+        .option-input {
+            flex: 1;
+            border: none;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 8px 0;
+            outline: none;
+        }
+
+        .option-input:focus {
+            border-bottom-color: #fc84fc;
+        }
+
+        .remove-option-btn {
+            background: none;
+            border: none;
+            color: #9ca3af;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        .remove-option-btn:hover {
+            color: #ef4444;
+        }
+
+        .add-option-btn {
+            background: none;
+            border: none;
+            color: #6b7280;
+            cursor: pointer;
+            padding: 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: 500;
+        }
+
+        .add-option-btn:hover {
+            color: #fc84fc;
+        }
+
+        .question-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 15px;
+            border-top: 1px solid #e5e7eb;
+            margin-top: 15px;
+        }
+
+        .question-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: #6b7280;
+            padding: 5px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .icon-btn:hover {
+            background: #f3f4f6;
+            color: #374151;
+        }
+
+        .required-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            color: #6b7280;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 44px;
+            height: 24px;
+            background: #e5e7eb;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .toggle-switch.active {
+            background: #fc84fc;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s;
+        }
+
+        .toggle-switch.active .toggle-slider {
+            transform: translateX(20px);
+        }
+
+        .add-question-btn {
+            background: white;
+            border: 2px dashed #cbd5e1;
+            padding: 20px;
+            border-radius: 12px;
+            width: 100%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-weight: 600;
+            color: #6b7280;
+            transition: all 0.2s;
+        }
+
+        .add-question-btn:hover {
+            border-color: #fc84fc;
+            color: #fc84fc;
+            background: #fdf4ff;
+        }
+
+        .preview-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .preview-content {
+            max-width: 700px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+        }
+
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .close-preview-btn {
+            background: #f3f4f6;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: #6b7280;
+        }
+
+        .close-preview-btn:hover {
+            background: #e5e7eb;
+        }
+
+        .preview-form-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #1f2937;
+        }
+
+        .preview-form-description {
+            color: #6b7280;
+            margin-bottom: 30px;
+        }
+
+        .preview-question {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .preview-question-text {
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #1f2937;
+        }
+
+        .required-indicator {
+            color: #ef4444;
+            margin-left: 4px;
+        }
+
+        .preview-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .preview-input:focus {
+            border-color: #fc84fc;
+        }
+
+        .preview-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 0;
+        }
+
+        .preview-radio,
+        .preview-checkbox {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .submit-form-btn {
+            background: #fc84fc;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .submit-form-btn:hover {
+            background: #e75ae7;
+        }
+
+        @media (max-width: 768px) {
+            .builder-container {
+                padding: 10px;
+            }
+
+            .form-title-input {
+                font-size: 1.5rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="builder-container">
+        <div class="builder-header">
+            <div class="header-actions">
+                <button class="back-btn" onclick="goBackToDashboard()">
+                    <i class='bx bx-arrow-back'></i> Back to Dashboard
+                </button>
+                <div class="action-buttons">
+                    <button class="btn btn-preview" onclick="previewForm()">
+                        <i class='bx bx-show'></i> Preview
+                    </button>
+                    <button class="btn btn-save" onclick="saveForm()">
+                        <i class='bx bx-save'></i> Save Form
+                    </button>
+                </div>
+            </div>
+            
+            <div class="form-title-section">
+                <input type="text" class="form-title-input" id="formTitle" placeholder="Untitled Form" value="Untitled Form">
+                <input type="text" class="form-description-input" id="formDescription" placeholder="Form description (optional)">
+            </div>
+        </div>
+
+        <div id="questionsContainer"></div>
+
+        <button class="add-question-btn" onclick="addQuestion()">
+            <i class='bx bx-plus-circle' style="font-size: 1.5rem;"></i>
+            Add Question
+        </button>
+    </div>
+
+    <!-- Preview Modal -->
+    <div class="preview-modal" id="previewModal">
+        <div class="preview-content">
+            <div class="preview-header">
+                <h2>Form Preview</h2>
+                <button class="close-preview-btn" onclick="closePreview()">
+                    <i class='bx bx-x'></i>
+                </button>
+            </div>
+            <div id="previewFormContent"></div>
+        </div>
+    </div>
+
+    <script>
+        let questions = [];
+        let questionIdCounter = 1;
+
+        // Initialize with one question
+        window.onload = () => {
+            addQuestion();
+        };
+
+        function addQuestion() {
+            const question = {
+                id: questionIdCounter++,
+                text: '',
+                type: 'short-answer',
+                options: ['Option 1'],
+                required: false
+            };
+            questions.push(question);
+            renderQuestions();
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questionsContainer');
+            container.innerHTML = '';
+
+            questions.forEach((question, index) => {
+                const questionCard = createQuestionCard(question, index);
+                container.appendChild(questionCard);
+            });
+        }
+
+        function createQuestionCard(question, index) {
+            const card = document.createElement('div');
+            card.className = 'question-card';
+            card.innerHTML = `
+                <div class="question-header">
+                    <input type="text" class="question-input" placeholder="Question ${index + 1}" 
+                           value="${question.text}" onchange="updateQuestion(${index}, 'text', this.value)">
+                    <select class="question-type-select" onchange="updateQuestionType(${index}, this.value)">
+                        <option value="short-answer" ${question.type === 'short-answer' ? 'selected' : ''}>Short Answer</option>
+                        <option value="paragraph" ${question.type === 'paragraph' ? 'selected' : ''}>Paragraph</option>
+                        <option value="multiple-choice" ${question.type === 'multiple-choice' ? 'selected' : ''}>Multiple Choice</option>
+                        <option value="checkboxes" ${question.type === 'checkboxes' ? 'selected' : ''}>Checkboxes</option>
+                        <option value="dropdown" ${question.type === 'dropdown' ? 'selected' : ''}>Dropdown</option>
+                    </select>
+                </div>
+                
+                <div class="options-container" id="options-${index}">
+                    ${renderQuestionOptions(question, index)}
+                </div>
+
+                <div class="question-footer">
+                    <div class="question-actions">
+                        <button class="icon-btn" onclick="duplicateQuestion(${index})" title="Duplicate">
+                            <i class='bx bx-copy'></i>
+                        </button>
+                        <button class="icon-btn" onclick="deleteQuestion(${index})" title="Delete">
+                            <i class='bx bx-trash'></i>
+                        </button>
+                    </div>
+                    <div class="required-toggle" onclick="toggleRequired(${index})">
+                        <span>Required</span>
+                        <div class="toggle-switch ${question.required ? 'active' : ''}" id="toggle-${index}">
+                            <div class="toggle-slider"></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            return card;
+        }
+
+        function renderQuestionOptions(question, questionIndex) {
+            if (['short-answer', 'paragraph'].includes(question.type)) {
+                return `<input type="text" class="option-input" placeholder="${question.type === 'paragraph' ? 'Long answer text' : 'Short answer text'}" disabled style="color: #9ca3af;">`;
+            }
+
+            if (['multiple-choice', 'checkboxes', 'dropdown'].includes(question.type)) {
+                const icon = question.type === 'multiple-choice' ? 'option-radio' : 'option-checkbox';
+                return question.options.map((option, optionIndex) => `
+                    <div class="option-item">
+                        <div class="${icon}"></div>
+                        <input type="text" class="option-input" placeholder="Option ${optionIndex + 1}" 
+                               value="${option}" onchange="updateOption(${questionIndex}, ${optionIndex}, this.value)">
+                        ${question.options.length > 1 ? `
+                            <button class="remove-option-btn" onclick="removeOption(${questionIndex}, ${optionIndex})">
+                                <i class='bx bx-x'></i>
+                            </button>
+                        ` : ''}
+                    </div>
+                `).join('') + `
+                    <button class="add-option-btn" onclick="addOption(${questionIndex})">
+                        <i class='bx bx-plus'></i> Add option
+                    </button>
+                `;
+            }
+
+            return '';
+        }
+
+        function updateQuestion(index, field, value) {
+            questions[index][field] = value;
+        }
+
+        function updateQuestionType(index, type) {
+            questions[index].type = type;
+            if (['multiple-choice', 'checkboxes', 'dropdown'].includes(type) && questions[index].options.length === 0) {
+                questions[index].options = ['Option 1'];
+            }
+            renderQuestions();
+        }
+
+        function updateOption(questionIndex, optionIndex, value) {
+            questions[questionIndex].options[optionIndex] = value;
+        }
+
+        function addOption(questionIndex) {
+            questions[questionIndex].options.push(`Option ${questions[questionIndex].options.length + 1}`);
+            renderQuestions();
+        }
+
+        function removeOption(questionIndex, optionIndex) {
+            if (questions[questionIndex].options.length > 1) {
+                questions[questionIndex].options.splice(optionIndex, 1);
+                renderQuestions();
+            }
+        }
+
+        function toggleRequired(index) {
+            questions[index].required = !questions[index].required;
+            const toggle = document.getElementById(`toggle-${index}`);
+            toggle.classList.toggle('active');
+        }
+
+        function duplicateQuestion(index) {
+            const newQuestion = JSON.parse(JSON.stringify(questions[index]));
+            newQuestion.id = questionIdCounter++;
+            questions.splice(index + 1, 0, newQuestion);
+            renderQuestions();
+        }
+
+        function deleteQuestion(index) {
+            if (questions.length === 1) {
+                alert('You must have at least one question in your form.');
+                return;
+            }
+            if (confirm('Are you sure you want to delete this question?')) {
+                questions.splice(index, 1);
+                renderQuestions();
+            }
+        }
+
+        function previewForm() {
+            const formTitle = document.getElementById('formTitle').value || 'Untitled Form';
+            const formDescription = document.getElementById('formDescription').value;
+            
+            let previewHTML = `
+                <div class="preview-form-title">${formTitle}</div>
+                ${formDescription ? `<div class="preview-form-description">${formDescription}</div>` : ''}
+            `;
+
+            questions.forEach((question, index) => {
+                previewHTML += `
+                    <div class="preview-question">
+                        <div class="preview-question-text">
+                            ${index + 1}. ${question.text || `Question ${index + 1}`}
+                            ${question.required ? '<span class="required-indicator">*</span>' : ''}
+                        </div>
+                        ${renderPreviewInput(question)}
+                    </div>
+                `;
+            });
+
+            previewHTML += '<button class="submit-form-btn" onclick="submitPreviewForm()">Submit</button>';
+
+            document.getElementById('previewFormContent').innerHTML = previewHTML;
+            document.getElementById('previewModal').style.display = 'block';
+        }
+
+        function renderPreviewInput(question) {
+            if (question.type === 'short-answer') {
+                return '<input type="text" class="preview-input" placeholder="Your answer">';
+            }
+            if (question.type === 'paragraph') {
+                return '<textarea class="preview-input" rows="4" placeholder="Your answer"></textarea>';
+            }
+            if (question.type === 'multiple-choice') {
+                return question.options.map(option => `
+                    <div class="preview-option">
+                        <input type="radio" class="preview-radio" name="q${question.id}">
+                        <label>${option}</label>
+                    </div>
+                `).join('');
+            }
+            if (question.type === 'checkboxes') {
+                return question.options.map((option, i) => `
+                    <div class="preview-option">
+                        <input type="checkbox" class="preview-checkbox" id="q${question.id}-${i}">
+                        <label for="q${question.id}-${i}">${option}</label>
+                    </div>
+                `).join('');
+            }
+            if (question.type === 'dropdown') {
+                return `
+                    <select class="preview-input">
+                        <option value="">Choose</option>
+                        ${question.options.map(option => `<option value="${option}">${option}</option>`).join('')}
+                    </select>
+                `;
+            }
+            return '';
+        }
+
+        function closePreview() {
+            document.getElementById('previewModal').style.display = 'none';
+        }
+
+        function submitPreviewForm() {
+            alert('This is a preview! Your form will collect real responses once published.');
+            closePreview();
+        }
+
+        function saveForm() {
+            const formTitle = document.getElementById('formTitle').value || 'Untitled Form';
+            const formDescription = document.getElementById('formDescription').value;
+            
+            const formData = {
+                title: formTitle,
+                description: formDescription,
+                questions: questions,
+                createdAt: new Date().toISOString()
+            };
+
+            // Save to memory
+            const savedForms = JSON.parse(localStorage.getItem('savedForms') || '[]');
+            savedForms.push(formData);
+            localStorage.setItem('savedForms', JSON.stringify(savedForms));
+
+            alert(`Form "${formTitle}" saved successfully!\n\nTotal Questions: ${questions.length}\n\nYou can now publish this form from your dashboard.`);
+        }
+
+        function goBackToDashboard() {
+            if (confirm('Are you sure you want to go back? Any unsaved changes will be lost.')) {
+                window.history.back();
+                // Or use: window.location.href = 'dashboard.html';
+            }
+        }
+
+        // Close preview when clicking outside
+        document.getElementById('previewModal').addEventListener('click', (e) => {
+            if (e.target.id === 'previewModal') {
+                closePreview();
+            }
+        });
+    </script>
+</body>
+</html>
