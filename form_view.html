@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FormFlow - Submit Form</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: linear-gradient(135deg, #fc84fc 0%, #a576d0 50%, #9333ea 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .form-container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 700px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .form-header h1 {
+            font-size: 2rem;
+            color: #1f2937;
+            margin-bottom: 10px;
+        }
+
+        .form-header p {
+            color: #6b7280;
+            font-size: 1rem;
+        }
+
+        .form-field {
+            margin-bottom: 20px;
+        }
+
+        .form-field label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .form-field input,
+        .form-field textarea,
+        .form-field select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-field input:focus,
+        .form-field textarea:focus,
+        .form-field select:focus {
+            outline: none;
+            border-color: #a855f7;
+            box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.1);
+        }
+
+        .form-field textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .checkbox-field,
+        .radio-field {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .checkbox-field input,
+        .radio-field input {
+            width: auto;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: #a855f7;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .submit-btn:hover {
+            background: #9333ea;
+            transform: translateY(-2px);
+        }
+
+        .submit-btn:disabled {
+            background: #d1d5db;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .success-message {
+            background: #10b981;
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .error-message {
+            background: #ef4444;
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #6b7280;
+        }
+
+        .powered-by {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        .powered-by a {
+            color: #a855f7;
+            text-decoration: none;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <div class="loading" id="loading">
+            <i class='bx bx-loader-alt bx-spin' style="font-size: 3rem;"></i>
+            <p>Loading form...</p>
+        </div>
+
+        <div class="success-message" id="success-message">
+            ✓ Form submitted successfully! Thank you for your response.
+        </div>
+
+        <div class="error-message" id="error-message">
+            Error loading form. Please check the URL and try again.
+        </div>
+
+        <div id="form-content" style="display: none;">
+            <div class="form-header">
+                <h1 id="form-title">Form Title</h1>
+                <p id="form-description">Form Description</p>
+            </div>
+
+            <form id="dynamic-form">
+                <!-- Form fields will be dynamically inserted here -->
+            </form>
+
+            <button type="submit" class="submit-btn" id="submit-btn" form="dynamic-form">
+                Submit Form
+            </button>
+        </div>
+
+        <div class="powered-by">
+            Powered by <a href="/">FormFlow</a>
+        </div>
+    </div>
+
+    <script>
+        const formId = window.location.pathname.split('/').pop();
+        const loadingEl = document.getElementById('loading');
+        const errorEl = document.getElementById('error-message');
+        const successEl = document.getElementById('success-message');
+        const formContentEl = document.getElementById('form-content');
+        const dynamicForm = document.getElementById('dynamic-form');
+        const submitBtn = document.getElementById('submit-btn');
+
+        async function loadForm() {
+            try {
+                const response = await fetch(`/api/v1/forms/${formId}`);
+                
+                if (!response.ok) throw new Error('Form not found');
+                
+                const formData = await response.json();
+                
+                document.getElementById('form-title').textContent = formData.name;
+                document.getElementById('form-description').textContent = formData.description || 'Please fill out the form below.';
+                
+                renderFormFields(formData.fields);
+                
+                loadingEl.style.display = 'none';
+                formContentEl.style.display = 'block';
+                
+            } catch (error) {
+                console.error('Error loading form:', error);
+                loadingEl.style.display = 'none';
+                errorEl.style.display = 'block';
+            }
+        }
+
+        function renderFormFields(fields) {
+            if (!fields || fields.length === 0) {
+                dynamicForm.innerHTML = `
+                    <div class="form-field">
+                        <label>Name</label>
+                        <input type="text" name="name" required>
+                    </div>
+                    <div class="form-field">
+                        <label>Email</label>
+                        <input type="email" name="email" required>
+                    </div>
+                    <div class="form-field">
+                        <label>Message</label>
+                        <textarea name="message" required></textarea>
+                    </div>
+                `;
+                return;
+            }
+            
+            dynamicForm.innerHTML = fields.map(field => {
+                switch(field.type) {
+                    case 'text':
+                    case 'email':
+                    case 'number':
+                        return `
+                            <div class="form-field">
+                                <label>${field.label}</label>
+                                <input type="${field.type}" name="${field.name}" 
+                                    placeholder="${field.placeholder || ''}" 
+                                    ${field.required ? 'required' : ''}>
+                            </div>
+                        `;
+                    case 'textarea':
+                        return `
+                            <div class="form-field">
+                                <label>${field.label}</label>
+                                <textarea name="${field.name}" 
+                                    placeholder="${field.placeholder || ''}"
+                                    ${field.required ? 'required' : ''}></textarea>
+                            </div>
+                        `;
+                    case 'select':
+                        return `
+                            <div class="form-field">
+                                <label>${field.label}</label>
+                                <select name="${field.name}" ${field.required ? 'required' : ''}>
+                                    <option value="">Select an option</option>
+                                    ${(field.options || []).map(opt => 
+                                        `<option value="${opt}">${opt}</option>`
+                                    ).join('')}
+                                </select>
+                            </div>
+                        `;
+                    case 'checkbox':
+                        return `
+                            <div class="checkbox-field">
+                                <input type="checkbox" name="${field.name}" id="${field.name}"
+                                    ${field.required ? 'required' : ''}>
+                                <label for="${field.name}">${field.label}</label>
+                            </div>
+                        `;
+                    case 'radio':
+                        return `
+                            <div class="form-field">
+                                <label>${field.label}</label>
+                                ${(field.options || []).map(opt => `
+                                    <div class="radio-field">
+                                        <input type="radio" name="${field.name}" 
+                                            value="${opt}" id="${field.name}_${opt}"
+                                            ${field.required ? 'required' : ''}>
+                                        <label for="${field.name}_${opt}">${opt}</label>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        `;
+                    default:
+                        return '';
+                }
+            }).join('');
+        }
+
+        dynamicForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Submitting...';
+            
+            const formData = new FormData(dynamicForm);
+            const data = Object.fromEntries(formData.entries());
+            
+            try {
+                const response = await fetch(`/api/v1/forms/${formId}/submit`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                if (!response.ok) throw new Error('Submission failed');
+                
+                successEl.style.display = 'block';
+                formContentEl.style.display = 'none';
+                
+                setTimeout(() => {
+                    dynamicForm.reset();
+                    successEl.style.display = 'none';
+                    formContentEl.style.display = 'block';
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Submit Form';
+                }, 3000);
+                
+            } catch (error) {
+                console.error('Error submitting form:', error);
+                alert('Failed to submit form. Please try again.');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit Form';
+            }
+        });
+
+        loadForm();
+    </script>
+</body>
+</html>
