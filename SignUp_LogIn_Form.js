@@ -74,3 +74,35 @@ if (loginForm) {
 if (registerForm) {
     registerForm.addEventListener('submit', (e) => handleFormSubmission(e, registerForm, registerForm.action));
 }
+
+
+
+document.getElementById("register-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const formData = new FormData(e.target);
+  const data = Object.fromEntries(formData);
+
+  const res = await fetch("http://localhost:5000/api/v1/auth/register", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  });
+
+  const result = await res.json();
+  alert(result.message || result.error);
+});
+
+document.getElementById("login-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const formData = new FormData(e.target);
+  const data = Object.fromEntries(formData);
+
+  const res = await fetch("http://localhost:5000/api/v1/auth/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  });
+
+  const result = await res.json();
+  alert(result.message || result.error);
+});

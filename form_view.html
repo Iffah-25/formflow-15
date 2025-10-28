@@ -97,7 +97,7 @@
 
         .navbar.scrolled .logo,
         .navbar.scrolled .nav-link,
-        .navbar.scrolled .login-btn {
+        .navbar.scrolled .button {
             color: #333;
         }
 
@@ -170,14 +170,14 @@
             align-items: center;
         }
 
-        .login-btn {
+        .button {
             color: white;
             font-weight: 500;
             text-decoration: none;
             transition: all 0.3s ease;
         }
 
-        .signup-btn {
+        .button {
             background: white;
             color: var(--primary);
             padding: 0.7rem 1.5rem;
@@ -188,7 +188,7 @@
             box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
         }
 
-        .signup-btn:hover {
+        .button:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(255, 255, 255, 0.4);
         }
@@ -504,8 +504,8 @@
                 FormFlow
             </a>
             <div class="auth-buttons">
-                <a href="SignUp_LogIn_Form.html" class="login-btn">Log In</a>
-                <a href="SignUp_LogIn_Form.html" class="signup-btn">Sign Up</a>
+                <a href="SignUp_LogIn_Form.html"><button type="button" class="button" onclick="signupUser()">Sign Up</button></a>
+                <a href="SignUp_LogIn_Form.html"><button type="button" class="button" onclick="loginUser()">Log In</button></a>
             </div>
         </div>
     </nav>
